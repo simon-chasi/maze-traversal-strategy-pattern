@@ -16,15 +16,15 @@ public class Maze {
      */
     private static final Logger LOGGER = Logger.getLogger(Maze.class.getName());
 
-    // Characters representing either a path, a wall, an empty field or
-    // the starting and ending point of a maze stored as text
-    private static final char PATH_CHAR = 'o';
-    private static final char WALL_CHAR = '#';
-    private static final char STARTING_FIELD_CHAR = 'S';
-    private static final char ENDING_FIELD_CHAR = 'E';
-    private static final char EMPTY_FIELD_CHAR = ' ';
-
     private final String description;
+
+    // Characters representing either a path, a wall, an empty field or
+    // the starting and ending field of a maze stored as text
+    private static final char PATH = 'o';
+    private static final char WALL = '#';
+    private static final char STARTING_FIELD = 'S';
+    private static final char ENDING_FIELD = 'E';
+    private static final char EMPTY_FIELD = ' ';
 
     /**
      * The maze board is stored as a 2d boolean array. {@code true} values represent the path
@@ -42,30 +42,30 @@ public class Maze {
      * @param startingField A non-null {@link MazeField} object which represents the starting position of the maze
      * @param endingField A non-null {@link MazeField} object which represents the ending position of the maze
      * @param description An optional maze description
-     * @throws IllegalStateException <ul>
-     *                                  <li>If any of the arguments except the description are {@code null}</li>
-     *                                  <li>the maze board's height or width is zero</li>
-     *                                  <li>the starting or ending field(s) lie(s) outside the board</li>
-     *                              </ul>
+     * @throws IllegalArgumentException <ul>
+     *                                      <li>If any of the arguments except the description are {@code null}</li>
+     *                                      <li>the maze board's height or width is zero</li>
+     *                                      <li>the starting or ending field(s) lie(s) outside the board</li>
+     *                                  </ul>
      */
     public Maze(boolean[][] mazeBoard, MazeField startingField, MazeField endingField, String description)
-            throws IllegalStateException {
+            throws IllegalArgumentException {
         if (mazeBoard == null || mazeBoard.length < 1 || mazeBoard[0] == null || mazeBoard[0].length < 1) {
-            throw new IllegalStateException(
+            throw new IllegalArgumentException(
                     "To successfully create a maze object the passed maze board "
                             + "must not be null and have at least one entry."
             );
         }
 
         if (startingField == null || endingField == null) {
-            throw new IllegalStateException(
+            throw new IllegalArgumentException(
                     "To successfully create a maze object the passed starting and ending fields must not be null."
             );
         }
 
         if (startingField.positionX() >= mazeBoard[0].length || startingField.positionY() >= mazeBoard.length
                 || endingField.positionX() >= mazeBoard[0].length || endingField.positionY() >= mazeBoard.length) {
-            throw new IllegalStateException(String.format(
+            throw new IllegalArgumentException(String.format(
                     "To successfully create a maze object the passed starting and ending fields "
                             + "must lie within the maze board.%sStarting field: %s, ending field: %s\n"
                             + "Maze board width: %d, maze board height: %d",
@@ -97,17 +97,19 @@ public class Maze {
 
         for (boolean[] row : mazeBoard) {
             for (boolean field : row) {
-                mazeBoardAsText.append(field ? PATH_CHAR : WALL_CHAR);
+                mazeBoardAsText.append(field ? PATH : WALL);
             }
             mazeBoardAsText.append(lineSeparator);
         }
 
+        // Replace starting and ending field characters only after initializing the board with path and
+        // wall characters. Performing a further check in the nested for-loop is costly for large mazes.
         int mazeBoardAsTextWidth = mazeBoard[0].length + lineSeparator.length();
         int startingFieldCharIndex = startingField.calculateSequenceInBoard(mazeBoardAsTextWidth);
         int endingFieldCharIndex = endingField.calculateSequenceInBoard(mazeBoardAsTextWidth);
 
-        mazeBoardAsText.setCharAt(startingFieldCharIndex, STARTING_FIELD_CHAR);
-        mazeBoardAsText.setCharAt(endingFieldCharIndex, ENDING_FIELD_CHAR);
+        mazeBoardAsText.setCharAt(startingFieldCharIndex, STARTING_FIELD);
+        mazeBoardAsText.setCharAt(endingFieldCharIndex, ENDING_FIELD);
 
         return description == null ? "No description provided" : description
                 + lineSeparator.repeat(2) + mazeBoardAsText;
@@ -157,14 +159,16 @@ public class Maze {
         private static boolean onlyOneStartingAndEndingFieldCharPresent(String[] fieldLines) {
             String fieldLinesInOneLine = String.join("", fieldLines);
 
-            if (fieldLinesInOneLine.indexOf(STARTING_FIELD_CHAR) != fieldLinesInOneLine.lastIndexOf(STARTING_FIELD_CHAR)) {
+            if (fieldLinesInOneLine.indexOf(STARTING_FIELD)
+                    != fieldLinesInOneLine.lastIndexOf(STARTING_FIELD)) {
                 LOGGER.warning(
                         "Detected none or more than one starting field characters in the passed field lines array:"
                                 + String.join(System.lineSeparator(), fieldLines)
                 );
                 return false;
             }
-            if (fieldLinesInOneLine.indexOf(ENDING_FIELD_CHAR) != fieldLinesInOneLine.lastIndexOf(ENDING_FIELD_CHAR)) {
+            if (fieldLinesInOneLine.indexOf(ENDING_FIELD)
+                    != fieldLinesInOneLine.lastIndexOf(ENDING_FIELD)) {
                 LOGGER.warning(
                         "Detected none or more than one ending field characters in the passed field lines array:"
                                 + String.join(System.lineSeparator(), fieldLines)
@@ -232,16 +236,16 @@ public class Maze {
 
                 for (int j = 0; j < fieldLine.length(); j++) {
                     switch (fieldLine.charAt(j)) {
-                        case PATH_CHAR -> mazeBoard[i][j] = true;
-                        case STARTING_FIELD_CHAR -> {
+                        case PATH -> mazeBoard[i][j] = true;
+                        case STARTING_FIELD -> {
                             mazeBoard[i][j] = true;
                             startingField = new MazeField(j, i);
                         }
-                        case ENDING_FIELD_CHAR -> {
+                        case ENDING_FIELD -> {
                             mazeBoard[i][j] = true;
                             endingField = new MazeField(j, i);
                         }
-                        case WALL_CHAR, EMPTY_FIELD_CHAR -> mazeBoard[i][j] = false;
+                        case WALL, EMPTY_FIELD -> mazeBoard[i][j] = false;
                         default -> {
                             LOGGER.warning(String.format(
                                     "Detected invalid character \"%c\" at line %d \"%s\" in the following maze:%s%s",
@@ -278,7 +282,7 @@ public class Maze {
 
             try {
                 return new Maze(mazeBoard, startingField, endingField, description);
-            } catch (IllegalStateException e) {
+            } catch (IllegalArgumentException e) {
                 LOGGER.warning(e.getMessage());
                 return null;
             }

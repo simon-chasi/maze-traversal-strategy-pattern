@@ -210,6 +210,8 @@ public class MazeRepository {
         }
     }
 
+    public Maze getMaze(int index) { return mazes.get(index); }
+
     /**
      * <p>
      *     Returns a string representation of the maze file lines.

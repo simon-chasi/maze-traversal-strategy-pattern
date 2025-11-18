@@ -1,6 +1,8 @@
 package com.app;
 
 import com.mazedata.MazeRepository;
+import com.mazedata.MazeTraversalSolution;
+import com.strategies.HandOnWall;
 
 import java.util.Scanner;
 
@@ -14,6 +16,8 @@ public class App {
         mr.importMazes(true);
         System.out.println(mr.mazesToString());
 
-        Scanner sc = new Scanner(System.in);
+        HandOnWall handOnWall = new HandOnWall(HandOnWall.HandOnWallSide.RIGHT);
+        MazeTraversalSolution handOnWallSolution = handOnWall.traverseMaze(mr.getMaze(0));
+        System.out.println(handOnWallSolution.toString());
     }
 }
