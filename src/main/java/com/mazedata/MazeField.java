@@ -17,11 +17,40 @@ public record MazeField(
         int positionY
 ) {
     public enum BorderingFieldsDirection {
-        CLOCKWISE, COUNTER_CLOCKWISE
+        CLOCKWISE(-1), COUNTER_CLOCKWISE(1);
+
+        private final int direction;
+
+        BorderingFieldsDirection(int direction) {
+            this.direction = direction;
+        }
+
+        public int getDirection() { return direction; }
+
+        public BorderingFieldsDirection inverse() {
+            return direction == -1 ? CLOCKWISE : COUNTER_CLOCKWISE;
+        }
     }
 
     public enum BorderingFieldSide {
-        TOP, RIGHT, BOTTOM, LEFT
+        TOP, RIGHT, BOTTOM, LEFT;
+
+        public BorderingFieldSide next() {
+            return next(BorderingFieldsDirection.CLOCKWISE);
+        }
+
+        public BorderingFieldSide next(BorderingFieldsDirection direction) {
+            BorderingFieldSide[] values = BorderingFieldSide.values();
+            return values[(this.ordinal() - direction.getDirection() + values.length) % values.length];
+        }
+
+        public BorderingFieldSide previous() {
+            return next(BorderingFieldsDirection.COUNTER_CLOCKWISE);
+        }
+
+        public BorderingFieldSide inverse() {
+            return this.next().next();
+        }
     }
 
     public MazeField {
@@ -32,17 +61,35 @@ public record MazeField(
 
     /**
      * Returns the four {@link MazeField}s which border this maze field as an array.
-     * Starting from the top bordering maze field the direction is clockwise.
+     * Starting from the bordering maze field on the given side the direction is clockwise.
      *
      * @param boardHeight The height of the board this field is part of
      * @param boardWidth The width of the board this field is part of
-     * @param firstSide Top, right, bottom or left bordering field as the first array element
+     * @param firstSide Top, right, bottom or left bordering field as the first array element.
+     *                  Defaults to top if {@code null}.
      * @return as described above
      *
      * @see #determineBorderingFields(int, int, BorderingFieldsDirection, BorderingFieldSide)
      */
     public MazeField[] determineBorderingFields(int boardHeight, int boardWidth, BorderingFieldSide firstSide) {
         return determineBorderingFields(boardHeight, boardWidth, BorderingFieldsDirection.CLOCKWISE, firstSide);
+    }
+
+    /**
+     * Returns the four {@link MazeField}s which border this maze field as an array.
+     * The first element is the bordering field on the top.
+     * The order of the following fields depends on the given direction.
+     *
+     * @param boardHeight The height of the board this field is part of
+     * @param boardWidth The width of the board this field is part of
+     * @param direction Clockwise or counterclockwise starting from the bordering field on the top.
+     *                  Defaults to clockwise if {@code null}.
+     * @return as described above
+     *
+     * @see #determineBorderingFields(int, int, BorderingFieldsDirection, BorderingFieldSide)
+     */
+    public MazeField[] determineBorderingFields(int boardHeight, int boardWidth, BorderingFieldsDirection direction) {
+        return determineBorderingFields(boardHeight, boardWidth, direction, BorderingFieldSide.TOP);
     }
 
     /**
@@ -56,9 +103,10 @@ public record MazeField(
      *
      * @param boardHeight The height of the board this field is part of
      * @param boardWidth The width of the board this field is part of
-     * @param direction Clockwise or counterclockwise starting from the given side
+     * @param direction Clockwise or counterclockwise starting from the given side.
+     *                  Defaults to clockwise if {@code null}.
      * @param firstSide Top, right, bottom or left bordering field as the first array element.
-     *                  Defaults to top if {@code null}
+     *                  Defaults to top if {@code null}.
      * @return as described above
      */
     public MazeField[] determineBorderingFields(
@@ -71,11 +119,9 @@ public record MazeField(
         int mazeFieldSequence = calculateSequenceInBoard(boardWidth) + 1;
 
         int[] indexes = determineBorderingFieldsIndexes(
+                direction == null ? BorderingFieldsDirection.CLOCKWISE : direction,
                 firstSide == null ? BorderingFieldSide.TOP : firstSide
         );
-        System.out.println(Arrays.toString(indexes));
-        /*System.out.println("MazeFieldSequence: " + mazeFieldSequence);
-        System.out.println("Board width: " + boardWidth);*/
 
         // Maze field is not on the top edge
         if (mazeFieldSequence > boardWidth) {
@@ -83,23 +129,16 @@ public record MazeField(
         }
         // Maze field is not on the right edge
         if (mazeFieldSequence % boardWidth != 0) {
-            borderingMazeFields[indexes[direction == BorderingFieldsDirection.CLOCKWISE ? 1 : 3]]
-                    = new MazeField(positionX + 1, positionY);
+            borderingMazeFields[indexes[1]] = new MazeField(positionX + 1, positionY);
         }
         // Maze field is not on the bottom edge
-        if (mazeFieldSequence < (boardHeight - 1) * boardWidth) {
+        if (mazeFieldSequence <= (boardHeight - 1) * boardWidth) {
             borderingMazeFields[indexes[2]] = new MazeField(positionX, positionY + 1);
         }
         // Maze field is not on the left edge
         if (mazeFieldSequence % boardWidth != 1) {
-            borderingMazeFields[indexes[direction == BorderingFieldsDirection.CLOCKWISE ? 3 : 1]]
-                    = new MazeField(positionX - 1, positionY);
+            borderingMazeFields[indexes[3]] = new MazeField(positionX - 1, positionY);
         }
-/*
-        System.out.println(borderingMazeFields[0]);
-        System.out.println(borderingMazeFields[1]);
-        System.out.println(borderingMazeFields[2]);
-        System.out.println(borderingMazeFields[3]);*/
 
         return borderingMazeFields;
     }
@@ -131,12 +170,17 @@ public record MazeField(
      *     <li>3 -- Left</li>
      * </ul>
      *
+     * @param direction Clockwise or counterclockwise starting from the given side
      * @param firstSide Top, right, bottom or left as the first array element
      * @return as described above
      */
-    private static int[] determineBorderingFieldsIndexes(BorderingFieldSide firstSide) {
+    private static int[] determineBorderingFieldsIndexes(
+            BorderingFieldsDirection direction, BorderingFieldSide firstSide
+    ) {
         List<Integer> indexes = new ArrayList<>(
-                List.of(0, 1, 2, 3) // top, right, bottom, left
+                direction == BorderingFieldsDirection.CLOCKWISE
+                        ? Arrays.asList(0, 1, 2, 3) // top (0), right (1), bottom (2), left (3)
+                        : Arrays.asList(0, 3, 2, 1) // top (0), right (3), bottom (2), left (1)
         );
         Collections.rotate(indexes, firstSide.ordinal());
 

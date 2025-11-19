@@ -4,8 +4,6 @@ import com.mazedata.MazeRepository;
 import com.mazedata.MazeTraversalSolution;
 import com.strategies.HandOnWall;
 
-import java.util.Scanner;
-
 /**
  *
  */
@@ -16,8 +14,11 @@ public class App {
         mr.importMazes(true);
         System.out.println(mr.mazesToString());
 
-        HandOnWall handOnWall = new HandOnWall(HandOnWall.HandOnWallSide.RIGHT);
-        MazeTraversalSolution handOnWallSolution = handOnWall.traverseMaze(mr.getMaze(0));
-        System.out.println(handOnWallSolution.toString());
+        HandOnWall rightHandOnWall = new HandOnWall(HandOnWall.HandOnWallSide.RIGHT);
+        HandOnWall leftHandOnWall = new HandOnWall(HandOnWall.HandOnWallSide.LEFT);
+        MazeTraversalSolution rightHandOnWallSolution = rightHandOnWall.traverseMaze(mr.getMaze(2));
+        MazeTraversalSolution leftHandOnWallSolution = leftHandOnWall.traverseMaze(mr.getMaze(2));
+        //System.out.println(rightHandOnWallSolution.toString());
+        //System.out.println(leftHandOnWallSolution.toString());
     }
 }

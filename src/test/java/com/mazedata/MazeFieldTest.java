@@ -223,15 +223,15 @@ public class MazeFieldTest {
      * MazeField.BorderingFieldsDirection, MazeField.BorderingFieldSide)}.
      */
     private static void testDetermineBorderingFields(
-            MazeField field, MazeField first, MazeField second, MazeField third, MazeField fourth,
+            MazeField field, MazeField top, MazeField right, MazeField bottom, MazeField left,
             MazeField.BorderingFieldsDirection direction, MazeField.BorderingFieldSide side
     ) {
-        List<MazeField> expectedBorderingFields = new ArrayList<>(
+        List<MazeField> expectedBorderingFieldsList = new ArrayList<>(
                 direction == MazeField.BorderingFieldsDirection.CLOCKWISE
-                        ? Arrays.asList(first, second, third, fourth)
-                        : Arrays.asList(first, fourth, third, second)
+                        ? Arrays.asList(top, right, bottom, left)
+                        : Arrays.asList(top, left, bottom, right)
         );
-        Collections.rotate(expectedBorderingFields, side.ordinal());
+        Collections.rotate(expectedBorderingFieldsList, side.ordinal() * direction.getDirection());
 
         MazeField[] actualBorderingFields = field.determineBorderingFields(
                 BOARD_HEIGHT, BOARD_WIDTH, direction, side
@@ -242,16 +242,14 @@ public class MazeFieldTest {
                 String.format(
                         "Field: %s, Direction: %s, First side: %s.", field, direction, side
                 ),
-                String.format("Expected: %-35s, actual: %s", first, actualBorderingFields[0]),
-                String.format("Expected: %-35s, actual: %s", second, actualBorderingFields[1]),
-                String.format("Expected: %-35s, actual: %s", third, actualBorderingFields[2]),
-                String.format("Expected: %-35s, actual: %s", fourth, actualBorderingFields[3]),
+                String.format("Expected: %-35s, actual: %s", expectedBorderingFieldsList.get(0), actualBorderingFields[0]),
+                String.format("Expected: %-35s, actual: %s", expectedBorderingFieldsList.get(1), actualBorderingFields[1]),
+                String.format("Expected: %-35s, actual: %s", expectedBorderingFieldsList.get(2), actualBorderingFields[2]),
+                String.format("Expected: %-35s, actual: %s", expectedBorderingFieldsList.get(3), actualBorderingFields[3]),
                 System.lineSeparator()
         );
 
-        assertArrayEquals(
-                expectedBorderingFields.toArray(), actualBorderingFields,  assertFailInfo
-        );
+        assertArrayEquals(expectedBorderingFieldsList.toArray(), actualBorderingFields, assertFailInfo);
     }
 
     private static Stream<Arguments> borderingFieldsCases() {
@@ -336,6 +334,7 @@ public class MazeFieldTest {
             try {
                 method = MazeField.class.getDeclaredMethod(
                         METHOD_NAME,
+                        MazeField.BorderingFieldsDirection.class,
                         MazeField.BorderingFieldSide.class
                 );
             } catch (NoSuchMethodException e) {
@@ -346,51 +345,16 @@ public class MazeFieldTest {
             method.setAccessible(true);
         }
 
-        // Test all combinations of BorderingFieldsDirection and BorderingFieldSide
-        @Test
-        void testDetermineBorderingFieldsIndexes_Top() {
-            callDetermineBorderingFieldsIndexesAndAssert(
-                    method,
-                    MazeField.BorderingFieldSide.TOP,
-                    new int[] { 0, 1, 2, 3 }
-            );
-        }
-
-        @Test
-        void testDetermineBorderingFieldsIndexes_Right() {
-            callDetermineBorderingFieldsIndexesAndAssert(
-                    method,
-                    MazeField.BorderingFieldSide.RIGHT,
-                    new int[] { 3, 0, 1, 2 }
-            );
-        }
-
-        @Test
-        void testDetermineBorderingFieldsIndexes_Bottom() {
-            callDetermineBorderingFieldsIndexesAndAssert(
-                    method,
-                    MazeField.BorderingFieldSide.BOTTOM,
-                    new int[] { 2, 3, 0, 1 }
-            );
-        }
-
-        @Test
-        void testDetermineBorderingFieldsIndexes_Left() {
-            callDetermineBorderingFieldsIndexesAndAssert(
-                    method,
-                    MazeField.BorderingFieldSide.LEFT,
-                    new int[] { 1, 2, 3, 0 }
-            );
-        }
-
-        private static void callDetermineBorderingFieldsIndexesAndAssert(
-                Method determineBorderingFieldsIndexesPrivateMethod,
+        @ParameterizedTest(name = "{index}: direction={0}, side={1}, expectedIndexes={2}")
+        @MethodSource("borderingFieldsIndexesCases")
+        void callDetermineBorderingFieldsIndexesAndAssert(
+                MazeField.BorderingFieldsDirection direction,
                 MazeField.BorderingFieldSide side,
                 int[] expectedIndexes
         ) {
             int[] indexes;
             try {
-                indexes = (int[]) determineBorderingFieldsIndexesPrivateMethod.invoke(null, side);
+                indexes = (int[]) method.invoke(null, direction, side);
             } catch (IllegalAccessException | InvocationTargetException e) {
                 LOGGER.severe(String.format("Cannot invoke method %s.", METHOD_NAME));
                 throw new RuntimeException(e);
@@ -402,6 +366,54 @@ public class MazeFieldTest {
                     String.format(
                             "Expected indexes: %s, actual indexes: %s.",
                             Arrays.toString(expectedIndexes), Arrays.toString(indexes)
+                    )
+            );
+        }
+
+        private static Stream<Arguments> borderingFieldsIndexesCases() {
+            return Stream.of(
+                    // Clockwise
+                    Arguments.of(
+                            MazeField.BorderingFieldsDirection.CLOCKWISE,
+                            MazeField.BorderingFieldSide.TOP,
+                            new int[] { 0, 1, 2, 3 }
+                    ),
+                    Arguments.of(
+                            MazeField.BorderingFieldsDirection.CLOCKWISE,
+                            MazeField.BorderingFieldSide.RIGHT,
+                            new int[] { 3, 0, 1, 2 }
+                    ),
+                    Arguments.of(
+                            MazeField.BorderingFieldsDirection.CLOCKWISE,
+                            MazeField.BorderingFieldSide.BOTTOM,
+                            new int[] { 2, 3, 0, 1 }
+                    ),
+                    Arguments.of(
+                            MazeField.BorderingFieldsDirection.CLOCKWISE,
+                            MazeField.BorderingFieldSide.LEFT,
+                            new int[] { 1, 2, 3, 0 }
+                    ),
+
+                    // Counterclockwise
+                    Arguments.of(
+                            MazeField.BorderingFieldsDirection.COUNTER_CLOCKWISE,
+                            MazeField.BorderingFieldSide.TOP,
+                            new int[] { 0, 3, 2, 1 }
+                    ),
+                    Arguments.of(
+                            MazeField.BorderingFieldsDirection.COUNTER_CLOCKWISE,
+                            MazeField.BorderingFieldSide.RIGHT,
+                            new int[] { 1, 0, 3, 2 }
+                    ),
+                    Arguments.of(
+                            MazeField.BorderingFieldsDirection.COUNTER_CLOCKWISE,
+                            MazeField.BorderingFieldSide.BOTTOM,
+                            new int[] { 2, 1, 0, 3 }
+                    ),
+                    Arguments.of(
+                            MazeField.BorderingFieldsDirection.COUNTER_CLOCKWISE,
+                            MazeField.BorderingFieldSide.LEFT,
+                            new int[] { 3, 2, 1, 0 }
                     )
             );
         }

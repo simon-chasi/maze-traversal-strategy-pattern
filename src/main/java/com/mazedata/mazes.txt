@@ -7,7 +7,7 @@ oSoooooo#ooooo#ooo#o#ooo#
 #o#o#o#ooooo#ooo#o#o#ooo#
 #o###o###o###o#####o#o####################
 #ooo#ooo#o#ooo#ooooooooo##########
-#o#o#o#######o#o#o###o#o#i
+#o#o#o#######o#o#o###o#o#
 #o#ooo#ooo#ooooo#o#o#o#o#####
 ###o#o###o#o#######o###o######
 #o#o#o#ooo#ooo#ooooooooo###o
@@ -24,7 +24,7 @@ oooooooo#ooooo#o#ooooooo#ooo#
 #ooooooo#o#ooo#ooo#o#ooo#o#o#
 #o#####o###o#o#o###o###o#o#o#
 #ooooo#ooooo#ooooo#ooo#ooo#o#
-#o#######o###o#######o#o###o#i
+#o#######o###o#######o#o###o#
 #o#o#ooooooo#o#ooooooooo#ooo#
 #o#o#########o#o###o#o#o#####
 #ooo#ooooooooo#o#ooo#o#oooooE
@@ -36,8 +36,9 @@ oooooooE#o#
 #o#######o#
 #ooooooo#o#
 #o#####o#o#
-#o#ooooooo#
+#o#oooooo#o
 #########oS
+ooooooooooo
 -new-maze-
 Maze height fairly big
 oo#################################
@@ -51,7 +52,7 @@ oooo#Soooooooooo#ooooo#ooooo#ooo#o#
 #o#o###o#o#########o#o#####o#o###o#
 #ooo#ooo#ooo#o#o#ooo#ooo#ooo#ooooo#
 #o#o#o#o#o###o#o#o###o#####o#####o#
-#o#ooo#ooooo#o#ooooo#ooooo#ooo#ooo#i
+#o#ooo#ooooo#o#ooooo#ooooo#ooo#ooo#
 #########o#o#o#o###o###o###o###o###
 #o#ooooooo#ooooo#o#ooooooooo#oooooE
 #o#o#####o#o#####o###o#####o###o#o#

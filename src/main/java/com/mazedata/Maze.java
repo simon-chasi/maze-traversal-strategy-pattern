@@ -18,13 +18,11 @@ public class Maze {
 
     private final String description;
 
-    // Characters representing either a path, a wall, an empty field or
-    // the starting and ending field of a maze stored as text
+    // Characters representing either a path, a wall, or the starting and ending field of a maze stored as text
     private static final char PATH = 'o';
     private static final char WALL = '#';
     private static final char STARTING_FIELD = 'S';
     private static final char ENDING_FIELD = 'E';
-    private static final char EMPTY_FIELD = ' ';
 
     /**
      * The maze board is stored as a 2d boolean array. {@code true} values represent the path
@@ -245,7 +243,7 @@ public class Maze {
                             mazeBoard[i][j] = true;
                             endingField = new MazeField(j, i);
                         }
-                        case WALL, EMPTY_FIELD -> mazeBoard[i][j] = false;
+                        case WALL -> mazeBoard[i][j] = false;
                         default -> {
                             LOGGER.warning(String.format(
                                     "Detected invalid character \"%c\" at line %d \"%s\" in the following maze:%s%s",
