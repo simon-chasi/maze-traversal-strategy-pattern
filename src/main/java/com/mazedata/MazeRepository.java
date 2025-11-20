@@ -16,12 +16,12 @@ import java.util.logging.Logger;
  * and maze fields in the following one or more lines) which is separated using {@value MAZE_LINES_SEPARATOR}
  * and should look like the following simple example:
  * <pre>
- *     {@link #MAZE_LINES_SEPARATOR}
- *     [First maze description]
- *     [First maze fields]
- *     {@link #MAZE_LINES_SEPARATOR}
- *     [Second maze description]
- *     [Second maze fields]
+ * {@link #MAZE_LINES_SEPARATOR}
+ * [First maze description]
+ * [First maze fields]
+ * {@link #MAZE_LINES_SEPARATOR}
+ * [Second maze description]
+ * [Second maze fields]
  * </pre>
  */
 public class MazeRepository {
@@ -212,13 +212,12 @@ public class MazeRepository {
 
     public Maze getMaze(int index) { return mazes.get(index); }
 
+    public List<Maze> getMazes() { return List.copyOf(mazes); }
+
+    public List<String> getMazeFileLines() { return List.copyOf(mazeFileLines); }
+
     /**
-     * <p>
-     *     Returns a string representation of the maze file lines.
-     * </p>
-     * Used primarily for testing purposes.
-     *
-     * @return as described above
+     * Returns a string representation of the maze file lines. Used primarily for testing purposes.
      */
     public String mazeFileLinesToString() {
         return String.join(System.lineSeparator(), mazeFileLines);

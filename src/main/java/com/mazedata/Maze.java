@@ -1,12 +1,13 @@
 package com.mazedata;
 
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 /**
  * <p>
  *     The class {@code Maze} represents a labyrinth which consists out of a board with a starting and ending field.
- *     It provides a static method for creating a maze object and overrides {@link Object#toString()}
- *     to provide a unique presentation of a maze in the console.
+ *     It provides a static class with a static method for creating a maze object and contains string returning methods
+ *     to provide various presentations of a maze in the console.
  * </p>
  * Based on the maze's description and look the user may choose a maze traversing strategies to traverse it.
  */
@@ -18,11 +19,14 @@ public class Maze {
 
     private final String description;
 
-    // Characters representing either a path, a wall, or the starting and ending field of a maze stored as text
+    // Characters representing either a path, a wall, an empty field, the starting
+    // and ending field or the traversed path of a maze stored as text
     private static final char PATH = 'o';
     private static final char WALL = '#';
+    private static final char EMPTY_FIELD = ' ';
     private static final char STARTING_FIELD = 'S';
     private static final char ENDING_FIELD = 'E';
+    private static final char TRAVERSED_PATH = 'x';
 
     /**
      * The maze board is stored as a 2d boolean array. {@code true} values represent the path
@@ -90,27 +94,75 @@ public class Maze {
      */
     @Override
     public String toString() {
-        StringBuilder mazeBoardAsText = new StringBuilder();
-        String lineSeparator = System.lineSeparator();
+        return description == null ? "No description provided" : description
+                + System.lineSeparator().repeat(2) + mazeBoardToString();
+    }
 
-        for (boolean[] row : mazeBoard) {
-            for (boolean field : row) {
-                mazeBoardAsText.append(field ? PATH : WALL);
+    /**
+     * Returns a string representation of the maze board.
+     */
+    public String mazeBoardToString() {
+        return boardToString(null);
+    }
+
+    /**
+     * Returns a string representation of board which can traverse this maze. The passed board
+     * doesn't necessarily need to successfully traverse the maze. It can also show that the
+     * maze is untraversable if a path from the starting to the ending field doesn't exist.
+     *
+     * @param traversedBoard The traversed maze board with {@code true} values representing the traversed path
+     * @return The maze board along with the traversed board as string or {@code null} if
+     *         the passed board's dimensions don't correspond with this object's maze board
+     */
+    public String traversedBoardToString(boolean[][] traversedBoard) {
+        if (traversedBoard == null || traversedBoard.length != mazeBoard.length
+                || traversedBoard[0] == null || traversedBoard[0].length != mazeBoard[0].length) {
+            LOGGER.warning(
+                    "To return the traversed maze board as string it must not be null "
+                            + "and it must have the same dimensions as the maze board."
+            );
+            return null;
+        }
+
+        return boardToString(traversedBoard);
+    }
+
+    /**
+     * <p>
+     *     Returns a string representation of the maze board if {@code traversedBoard == null}, otherwise
+     *     the traversed board with {@code true} values standing for the traversed path is returned.
+     * </p>
+     * Being private this method doesn't perform checks to avoid exceptions (see below), so in order for
+     * exceptions not to be thrown, tha passed board must either be {@code null} or have the same height
+     * and width as the maze board while none of the {@code boolean[]} rows is {@code null}.
+     *
+     * @param traversedBoard The traversed board or {@code null}
+     * @return as described above
+     * @throws NullPointerException If one of the traversed board {@code boolean[]} rows is {@code null}
+     * @throws ArrayIndexOutOfBoundsException If the traversed board doesn't have the same dimensions as
+     *                                        this object's maze board
+     */
+    private String boardToString(boolean[][] traversedBoard) {
+        StringBuilder boardAsString = new StringBuilder();
+
+        for (int i = 0; i < mazeBoard.length; i++) {
+            for (int j = 0; j < mazeBoard[0].length; j++) {
+                boardAsString.append(
+                        traversedBoard != null && traversedBoard[i][j]
+                                ? TRAVERSED_PATH
+                                : mazeBoard[i][j] ? PATH : WALL
+                );
             }
-            mazeBoardAsText.append(lineSeparator);
+            boardAsString.append(System.lineSeparator());
         }
 
         // Replace starting and ending field characters only after initializing the board with path and
         // wall characters. Performing a further check in the nested for-loop is costly for large mazes.
-        int mazeBoardAsTextWidth = mazeBoard[0].length + lineSeparator.length();
-        int startingFieldCharIndex = startingField.calculateSequenceInBoard(mazeBoardAsTextWidth);
-        int endingFieldCharIndex = endingField.calculateSequenceInBoard(mazeBoardAsTextWidth);
+        int boardAsStringWidth = mazeBoard[0].length + System.lineSeparator().length();
+        boardAsString.setCharAt(startingField.calculateSequenceInBoard(boardAsStringWidth), STARTING_FIELD);
+        boardAsString.setCharAt(endingField.calculateSequenceInBoard(boardAsStringWidth), ENDING_FIELD);
 
-        mazeBoardAsText.setCharAt(startingFieldCharIndex, STARTING_FIELD);
-        mazeBoardAsText.setCharAt(endingFieldCharIndex, ENDING_FIELD);
-
-        return description == null ? "No description provided" : description
-                + lineSeparator.repeat(2) + mazeBoardAsText;
+        return boardAsString.toString();
     }
 
     /**
@@ -118,6 +170,11 @@ public class Maze {
      * objects and provides the static method {@link #createMaze(String[], String)}.
      */
     public static class MazeFactory {
+        /**
+         * Logger for tracking events and errors in the {@link MazeFactory} class.
+         */
+        private static final Logger LOGGER = Logger.getLogger(MazeFactory.class.getName());
+
         /**
          * Performs checks to ensure that the passed field lines array is valid and eventually
          * parses the lines along with the description to a {@link Maze} object.
@@ -127,24 +184,42 @@ public class Maze {
          * @return A successfully created {@link Maze} object or {@code null} if the initialization fails
          */
         public static Maze createMaze(String[] fieldLines, String description) {
-            if (fieldLines == null || fieldLines.length < 1) {
-                LOGGER.warning(String.format(
-                        "To create a maze (description: \"%s\") the provided field lines array must not be null or empty.",
-                        description
-                ));
+            if (fieldLinesInvalid(fieldLines, description) ||
+                    !onlyOneStartingAndEndingFieldCharPresent(fieldLines)) {
                 return null;
             }
 
-            if (!onlyOneStartingAndEndingFieldCharPresent(fieldLines)) {
-                return null;
+            int mazeWidth = 0;
+            for (String fieldsLine : fieldLines) {
+                // The leading white spaces are not removed with the trailing ones
+                // in order to enable the representation of elliptical mazes.
+                mazeWidth = Math.max(mazeWidth, fieldsLine.stripTrailing().length());
             }
 
-            boolean[][] mazeBoard = determineMazeBoard(fieldLines);
-            if (mazeBoard == null) {
-                return null;
-            }
+            boolean[][] mazeBoard = new boolean[fieldLines.length][mazeWidth];
 
             return parseLinesAndCreateMaze(fieldLines, mazeBoard, description);
+        }
+
+        /**
+         * Returns {@code true} if the field lines array is invalid, meaning that it's
+         * either {@code null}, empty or contains {@code null} or blank strings.
+         *
+         * @param fieldLines A string array containing the horizontal maze field lines
+         * @param description The maze description (used only for logging)
+         * @return as described above
+         */
+        private static boolean fieldLinesInvalid(String[] fieldLines, String description) {
+            if (fieldLines == null || fieldLines.length < 1
+                    || Arrays.stream(fieldLines).anyMatch(line -> line == null || line.isBlank())) {
+                LOGGER.warning(String.format(
+                        "To create a maze (description: \"%s\") the provided field lines array must not "
+                                + "be null, empty or contain null or blank strings.",
+                        description
+                ));
+                return true;
+            }
+            return false;
         }
 
         /**
@@ -157,60 +232,20 @@ public class Maze {
         private static boolean onlyOneStartingAndEndingFieldCharPresent(String[] fieldLines) {
             String fieldLinesInOneLine = String.join("", fieldLines);
 
-            if (fieldLinesInOneLine.indexOf(STARTING_FIELD)
-                    != fieldLinesInOneLine.lastIndexOf(STARTING_FIELD)) {
-                LOGGER.warning(
-                        "Detected none or more than one starting field characters in the passed field lines array:"
-                                + String.join(System.lineSeparator(), fieldLines)
-                );
-                return false;
-            }
-            if (fieldLinesInOneLine.indexOf(ENDING_FIELD)
-                    != fieldLinesInOneLine.lastIndexOf(ENDING_FIELD)) {
-                LOGGER.warning(
-                        "Detected none or more than one ending field characters in the passed field lines array:"
-                                + String.join(System.lineSeparator(), fieldLines)
-                );
-                return false;
-            }
-            return true;
-        }
+            boolean onlyOneStartingFieldCharPresent = fieldLinesInOneLine.chars()
+                    .filter(ch -> ch == STARTING_FIELD).count() == 1;
+            boolean onlyOneEndingFieldCharPresent = fieldLinesInOneLine.chars()
+                    .filter(ch -> ch == ENDING_FIELD).count() == 1;
 
-        /**
-         * <p>
-         *     Determines the width and height of the 2d maze board and returns a new 2d boolean array.
-         * </p>
-         * The maze board width is determined by the longest string in the provided string array while
-         * the maze height is specified by the provided array's length.
-         * If the array contains null objects or empty strings, the height is reduced accordingly.
-         *
-         * @param fieldLines A non-null and non-empty string array containing the horizontal maze field lines
-         * @return as described above
-         */
-        private static boolean[][] determineMazeBoard(String[] fieldLines) {
-            int mazeWidth = 0;
-            int mazeHeight = fieldLines.length;
-
-            for (String fieldsLine : fieldLines) {
-                if (fieldsLine == null || fieldsLine.isBlank()) {
-                    mazeHeight--;
-                    continue;
-                }
-                // The leading white spaces are not removed with the trailing ones
-                // in order to enable the representation of elliptical mazes.
-                mazeWidth = Math.max(mazeWidth, fieldsLine.stripTrailing().length());
+            if (onlyOneStartingFieldCharPresent && onlyOneEndingFieldCharPresent) {
+                return true;
             }
-
-            if (mazeWidth == 0 || mazeHeight == 0) {
-                LOGGER.warning(String.format(
-                        "A maze board with a zero width or height is not allowed. "
-                                + "Calculated width: %d, calculated height: %d",
-                        mazeWidth, mazeHeight
-                ));
-                return null;
-            }
-
-            return new boolean[mazeHeight][mazeWidth];
+            LOGGER.warning(
+                    "Detected none or more than one starting or / and ending field characters "
+                            + "in the passed field lines array:"
+                            + System.lineSeparator() + String.join(System.lineSeparator(), fieldLines)
+            );
+            return false;
         }
 
         /**
@@ -226,13 +261,11 @@ public class Maze {
             MazeField startingField = null;
             MazeField endingField = null;
 
-            for (int i = 0; i < fieldLines.length; i++) {
+            for (int i = 0; i < mazeBoard.length; i++) {
                 String fieldLine = fieldLines[i];
-                if (fieldLine == null || fieldLine.isBlank()) {
-                    continue;
-                }
 
-                for (int j = 0; j < fieldLine.length(); j++) {
+                // Using Math.min for the upper bound secures that ArrayIndexOutOfBoundsException is not thrown
+                for (int j = 0; j < Math.min(mazeBoard[0].length, fieldLine.length()); j++) {
                     switch (fieldLine.charAt(j)) {
                         case PATH -> mazeBoard[i][j] = true;
                         case STARTING_FIELD -> {
@@ -243,7 +276,7 @@ public class Maze {
                             mazeBoard[i][j] = true;
                             endingField = new MazeField(j, i);
                         }
-                        case WALL -> mazeBoard[i][j] = false;
+                        case WALL, EMPTY_FIELD -> mazeBoard[i][j] = false;
                         default -> {
                             LOGGER.warning(String.format(
                                     "Detected invalid character \"%c\" at line %d \"%s\" in the following maze:%s%s",
@@ -255,35 +288,8 @@ public class Maze {
                     }
                 }
             }
-
-            return createMazeWithParsedLines(mazeBoard, startingField, endingField, description);
-        }
-
-        /**
-         * Attempts to initialize a new {@link Maze} object out of passed (parsed) arguments.
-         *
-         * @param mazeBoard The maze board with {@code true} values representing a path
-         *                  and {@code false} values representing a wall
-         * @param startingField A non-null starting {@link MazeField}
-         * @param endingField A non-null starting {@link MazeField}
-         * @param description The maze description
-         * @return A new {@link Maze} instance or {@code null} if initialization fails
-         */
-        private static Maze createMazeWithParsedLines(boolean[][] mazeBoard, MazeField startingField, MazeField endingField, String description) {
-            if (startingField == null || endingField == null) {
-                LOGGER.warning(String.format(
-                        "No starting or ending field or both present in the maze (description: \"%s\").",
-                        description
-                ));
-                return null;
-            }
-
-            try {
-                return new Maze(mazeBoard, startingField, endingField, description);
-            } catch (IllegalArgumentException e) {
-                LOGGER.warning(e.getMessage());
-                return null;
-            }
+            // No need to wrap with try and catch block since at this point all arguments are meet the conditions
+            return new Maze(mazeBoard, startingField, endingField, description);
         }
     }
 }

@@ -36,9 +36,9 @@ oooooooE#o#
 #o#######o#
 #ooooooo#o#
 #o#####o#o#
-#o#oooooo#o
+#o#oooooooo
 #########oS
-ooooooooooo
+oooooooooo#
 -new-maze-
 Maze height fairly big
 oo#################################
@@ -62,6 +62,19 @@ oooo#Soooooooooo#ooooo#ooooo#ooo#o#
 #o#o#####o###o#####o###o#o#######o#
 #o#ooooooooooooooooooooo#ooooooooo#
 #################################o#
+-new-maze-
+Maze with loop
+     ooo
+    oo#oo
+   oo###oo
+   o#####o
+   oo###oo
+   ooo#ooo
+oooooooo
+oooooooooo
+oooSoooooE
+oooooooooo
+oooooooooo
 -new-maze-
 Maze width smaller
 oo#############

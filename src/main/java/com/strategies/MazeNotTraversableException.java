@@ -3,6 +3,8 @@ package com.strategies;
 import com.mazedata.Maze;
 
 public class MazeNotTraversableException extends RuntimeException {
+    private final String reason;
+
     public MazeNotTraversableException(String strategyName, Maze maze, String reason) {
         super(String.join(
                 System.lineSeparator(),
@@ -13,5 +15,9 @@ public class MazeNotTraversableException extends RuntimeException {
                 "Reason: " + reason,
                 ""
         ));
+
+        this.reason = reason;
     }
+
+    public String getReason() { return reason; }
 }

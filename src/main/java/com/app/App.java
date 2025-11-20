@@ -1,7 +1,6 @@
 package com.app;
 
 import com.mazedata.MazeRepository;
-import com.mazedata.MazeTraversalSolution;
 import com.strategies.HandOnWall;
 
 /**
@@ -16,9 +15,9 @@ public class App {
 
         HandOnWall rightHandOnWall = new HandOnWall(HandOnWall.HandOnWallSide.RIGHT);
         HandOnWall leftHandOnWall = new HandOnWall(HandOnWall.HandOnWallSide.LEFT);
-        MazeTraversalSolution rightHandOnWallSolution = rightHandOnWall.traverseMaze(mr.getMaze(2));
-        MazeTraversalSolution leftHandOnWallSolution = leftHandOnWall.traverseMaze(mr.getMaze(2));
-        //System.out.println(rightHandOnWallSolution.toString());
-        //System.out.println(leftHandOnWallSolution.toString());
+        boolean[][] rightHandOnWallTraversedBoard = rightHandOnWall.traverseMaze(mr.getMaze(3));
+        boolean[][] leftHandOnWallTraversedBoard = leftHandOnWall.traverseMaze(mr.getMaze(3));
+        System.out.println(mr.getMaze(3).traversedBoardToString(rightHandOnWallTraversedBoard));
+        System.out.println(mr.getMaze(3).traversedBoardToString(leftHandOnWallTraversedBoard));
     }
 }
