@@ -14,8 +14,11 @@ import java.util.List;
  */
 public class DepthFirstSearch implements MazeTraversableCheckStrategy, MazeTraversalStrategy {
     /**
-     * The method uses {@link #traverseMaze(Maze)} in attempt to traverse a maze
-     * and returns {@code true} on success, {@code false} otherwise.
+     * <p>
+     *     The method uses {@link #traverseMaze(Maze)} in attempt to traverse a maze
+     *     and returns {@code true} on success, {@code false} otherwise.
+     * </p>
+     * To find out the reason of untraversability call {@link #traverseMaze(Maze)} directly.
      *
      * @param maze {@inheritDoc}
      * @return {@inheritDoc}
