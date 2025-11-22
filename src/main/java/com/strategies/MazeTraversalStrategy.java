@@ -14,6 +14,7 @@ public interface MazeTraversalStrategy {
      * @return A 2d boolean array with {@code true} values representing the crossed path. If the maze is traversable,
      *         the path will lead from the starting to the ending point, if not, the return value will contain the
      *         crossed fields which lead to the conclusion that the maze is untraversable.
+     * @throws MazeNotTraversableException If the maze cannot be traversed using this strategy
      */
-    boolean[][] traverseMaze(Maze maze);
+    boolean[][] traverseMaze(Maze maze) throws MazeNotTraversableException;
 }

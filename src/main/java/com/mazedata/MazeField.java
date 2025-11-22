@@ -196,6 +196,23 @@ public record MazeField(
 
     /**
      * Returns the four {@link MazeField}s which border this maze field as an array.
+     * Starting from the bordering maze field on the top side the direction is clockwise.
+     *
+     * @param boardHeight The height of the board this field is part of
+     * @param boardWidth The width of the board this field is part of
+     * @return as described above
+     *
+     * @see #determineBorderingFields(int, int, BorderingFieldSide)
+     * @see #determineBorderingFields(int, int, BorderingFieldsDirection, BorderingFieldSide)
+     */
+    public MazeField[] determineBorderingFields(int boardHeight, int boardWidth) {
+        return determineBorderingFields(
+                boardHeight, boardWidth, BorderingFieldSide.TOP
+        );
+    }
+
+    /**
+     * Returns the four {@link MazeField}s which border this maze field as an array.
      * Starting from the bordering maze field on the given side the direction is clockwise.
      *
      * @param boardHeight The height of the board this field is part of

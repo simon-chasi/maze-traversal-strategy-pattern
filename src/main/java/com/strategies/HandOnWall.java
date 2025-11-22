@@ -84,6 +84,7 @@ public class HandOnWall implements MazeTraversalStrategy {
      *
      * @param maze {@inheritDoc}
      * @return {@inheritDoc}
+     * @throws MazeNotTraversableException {@inheritDoc}
      */
     @Override
     public boolean[][] traverseMaze(Maze maze) {
@@ -98,16 +99,13 @@ public class HandOnWall implements MazeTraversalStrategy {
         int startingFieldReachedAmount = 0;
 
         while (!currentField.equals(endingField)) {
-            MazeField nextField;
-            try {
-                startingFieldReachedAmount = increaseStartingFieldReachedAmount(
-                        maze, currentField, startingFieldReachedAmount
-                );
-                nextField = determineNextField(currentField, nextFieldFirstSide, mazeBoard, traversedMazeBoard, maze);
-            } catch (MazeNotTraversableException e) {
-                LOGGER.info(e.getMessage());
-                return traversedMazeBoard;
-            }
+            startingFieldReachedAmount = increaseStartingFieldReachedAmount(
+                    maze, currentField, startingFieldReachedAmount
+            );
+            MazeField nextField = determineNextField(
+                    currentField, nextFieldFirstSide, mazeBoard, traversedMazeBoard, maze
+            );
+
             // Determine next side which lies relatively on the right
             nextFieldFirstSide = currentField.borderingFieldSide(nextField).next(direction.inverse());
             currentField = nextField;
@@ -148,7 +146,6 @@ public class HandOnWall implements MazeTraversalStrategy {
      * @param maze The maze to be traversed
      * @param currentField A field the maze follower is at in the maze traversal process
      * @param startingFieldReachedAmount Number of times the starting point has been reached so far
-     *
      * @return as described above
      * @throws MazeNotTraversableException as described above
      */
