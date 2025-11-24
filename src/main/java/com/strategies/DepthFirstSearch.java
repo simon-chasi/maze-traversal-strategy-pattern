@@ -70,6 +70,7 @@ public class DepthFirstSearch implements MazeTraversableCheckStrategy, MazeTrave
             if (nextField != null) {
                 passedFields.add(nextField);
                 traversalFields.add(nextField);
+                currentField = nextField;
                 continue;
             }
             // If a dead end has been reached, move to the previous field and repeat the process

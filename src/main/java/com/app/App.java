@@ -1,5 +1,7 @@
 package com.app;
 
+import com.mazedata.Maze;
+import com.mazedata.MazeField;
 import com.mazedata.MazeRepository;
 import com.strategies.DepthFirstSearch;
 import com.strategies.HandOnWall;
@@ -23,6 +25,6 @@ public class App {
 
         DepthFirstSearch depthFirstSearch = new DepthFirstSearch();
         boolean[][] depthFirstSearchTraversedBoard = depthFirstSearch.traverseMaze(mr.getMaze(3));
-        System.out.println(mr.getMaze(3).traversedBoardToString(depthFirstSearchTraversedBoard));
+        //System.out.println(mr.getMaze(3).traversedBoardToString(depthFirstSearchTraversedBoard));
     }
 }
