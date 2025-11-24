@@ -141,7 +141,7 @@ public class MazeRepositoryTest {
                     Mockito.eq("Maze 2")
             )).thenReturn(mockMaze2);
 
-            mrWithValidFileType.importMazes(true);
+            mrWithValidFileType.importMazes();
             assertEquals(2, mrWithValidFileType.getMazes().size());
 
             // Argument verification

@@ -6,10 +6,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.List;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,7 +16,6 @@ public class MazeTest {
      * Maze description can be {@code null} or have a value, nonetheless it's content is irrelevant for testing.
      */
     private static final String description = "Some description";
-
 
     @Nested
     public class MazeFactoryTest {

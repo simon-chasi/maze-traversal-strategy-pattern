@@ -1,33 +1,100 @@
 package com.strategies;
 
-import com.mazedata.Maze;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.params.provider.Arguments;
 
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class DepthFirstSearchTest {
-    private DepthFirstSearch depthFirstSearch;
-
-    @BeforeEach
-    public void setUp() {
-        depthFirstSearch = new DepthFirstSearch();
+    @Nested
+    public class TraversableCheck extends AbstractMazeTraversableCheckStrategyTest<DepthFirstSearch> {
+        @Override
+        protected DepthFirstSearch createTraversableCheckStrategy() {
+            return new DepthFirstSearch();
+        }
     }
 
-    @ParameterizedTest
-    @MethodSource("com.strategies.TestMazeObjects#getTraversableMazes")
-    void testMazeIsTraversable_WithTraversableMaze(Maze maze) {
-        assertTrue(
-                depthFirstSearch.mazeIsTraversable(maze),
-                String.join(
-                        System.lineSeparator(),
-                        "The following maze should be traversable using "
-                                + "the depth first search traversal strategy:",
-                        maze.toString()
-                )
-        );
+    @Nested
+    public class TraverseMaze extends AbstractMazeTraversalStrategyTest<DepthFirstSearch> {
+
+        @Override
+        protected DepthFirstSearch createMazeTraversalStrategy() {
+            return new DepthFirstSearch();
+        }
+
+        @Override
+        protected Stream<Arguments> testTraverseMaze_WithTraversableMazeCases() {
+            return Stream.of(
+                    Arguments.of(
+                            TestMazeObjects.TRAVERSABLE_WITH_3_PATHS_OF_DIFFERENT_LENGTH,
+                            new boolean[][] {
+                                    { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+                                    { false, false, false, false, false, true , true , true , true , true , true , true , false, false, false },
+                                    { false, false, false, false, false, false, false, false, false, false, false, true , false, false, false },
+                                    { false, false, false, false, false, false, false, true , true , true , true , true , false, false, false },
+                                    { false, false, false, false, false, false, false, true , false, false, false, false, false, false, false },
+                                    { false, false, false, false, false, false, false, true , false, false, false, false, false, false, false },
+                                    { false, false, false, false, false, false, false, true , false, false, false, false, false, false, false },
+                                    { false, false, false, false, false, false, false, true , true , true , true , true , true , true , false },
+                                    { false, false, false, false, false, false, false, false, false, false, false, false, false, true , false },
+                                    { false, false, false, false, false, false, false, false, false, false, false, false, false, true , false },
+                                    { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false },
+                            }
+                    ),
+                    Arguments.of(
+                            TestMazeObjects.TRAVERSABLE_WITH_2_PATHS_OF_SAME_LENGTH,
+                            new boolean[][] {
+                                    { false, false, false, false, false, false, false, false, false, false, false },
+                                    { false, false, false, true , true , true , false, false, false, false, false },
+                                    { false, false, false, true , false, true , false, false, false, false, false },
+                                    { false, true , true , true , false, true , false, false, false, false, false },
+                                    { false, true , false, false, false, true , false, false, false, false, false },
+                                    { false, false, false, false, false, false, false, false, false, false, false },
+                                    { false, false, false, false, false, false, false, false, false, false, false },
+                                    { false, false, false, false, false, false, false, false, false, false, false },
+                                    { false, false, false, false, false, false, false, false, false, false, false },
+                            }
+                    ),
+                    // Check if a maze which is not traversable with hand on wall can be correctly traversed using DFS
+                    Arguments.of(
+                            TestMazeObjects.TRAVERSABLE_BUT_NOT_WITH_EITHER_HAND_ON_WALL,
+                            new boolean[][] {
+                                    { false, true , true , false, false, false, false, false, false, false, false, false, false },
+                                    { false, true , true , true , true , true , true , true , true , true , true , true , false },
+                                    { false, true , true , true , false, false, false, false, false, false, false, true , false },
+                                    { false, true , true , false, false, false, false, false, false, false, false, true , false },
+                                    { false, true , true , false, false, false, false, false, false, false, false, true , false },
+                                    { false, true , true , true , true , true , true , true , true , true , true , true , false },
+                                    { false, false, false, false, true , true , false, false, false, false, true , true , false },
+                                    { false, false, false, false, true , true , false, false, false, false, false, false, false },
+                                    { false, false, false, false, false, false, false, false, false, false, false, false, false },
+                            }
+                    ),
+                    // Test trivial cases also
+                    Arguments.of(
+                            TestMazeObjects.TRAVERSABLE_WITH_START_AND_END_SAME,
+                            new boolean[][] {
+                                    { false, false, false },
+                                    { false, true , false },
+                                    { false, false, false },
+                            }
+                    ),
+                    Arguments.of(
+                            TestMazeObjects.TRAVERSABLE_WITH_START_AND_END_NEXT_TO_EACH_OTHER,
+                            new boolean[][] {
+                                    { true , true , false },
+                                    { true , true , false },
+                                    { false, false, false },
+                            }
+                    )
+            );
+        }
+
+        @Override
+        protected Stream<Arguments> testTraverseMaze_WithUntraversableMazeCases() {
+            return TestMazeObjects.getUntraversableMazes().map(maze ->
+                    Arguments.of(maze, null)
+            );
+        }
     }
 }

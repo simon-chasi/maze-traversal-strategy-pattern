@@ -121,6 +121,16 @@ public class MazeRepository {
     }
 
     /**
+     * Creates and adds new {@link Maze} objects to the mazes list.
+     * The previously imported mazes are deleted prior to the import.
+     *
+     * @see #importMazes(boolean)
+     */
+    public void importMazes() {
+        importMazes(true);
+    }
+
+    /**
      * Creates and adds new {@link Maze} objects to the mazes list by looping through maze file lines.
      * Each time the lines separator is detected, a new maze can be created.
      *

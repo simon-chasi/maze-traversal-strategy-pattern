@@ -76,8 +76,8 @@ public class TestMazeObjects {
                     { false, true , true , true , true , true , true , true , false, true , false },
                     { false, false, false, false, false, false, false, false, false, true , true  },
             },
-            new MazeField(1, 5),
-            new MazeField(5, 5),
+            new MazeField(1, 4),
+            new MazeField(5, 4),
             "A maze which is overall traversable using every strategy with 2 paths of the same length"
     );
 

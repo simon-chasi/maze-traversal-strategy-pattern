@@ -9,7 +9,7 @@ import com.mazedata.Maze;
 public interface MazeTraversableCheckStrategy {
     /**
      * <p>
-     *     Returns {@code true} if the maze is traversable, or {@code false} if it is not.
+     *     Returns {@code true} if the maze is traversable, {@code false} if it is not.
      * </p>
      *
      * @param maze The maze to be analyzed

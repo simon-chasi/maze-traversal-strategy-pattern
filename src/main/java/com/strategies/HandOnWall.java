@@ -89,11 +89,13 @@ public class HandOnWall implements MazeTraversalStrategy {
     @Override
     public boolean[][] traverseMaze(Maze maze) {
         boolean[][] mazeBoard = maze.getMazeBoard();
-        // Initially filled with false values since no path has been crossed
-        boolean[][] traversedMazeBoard = new boolean[mazeBoard.length][mazeBoard[0].length];
 
         MazeField currentField = maze.getStartingField();
         MazeField endingField = maze.getEndingField();
+
+        // Initially only filled with one true value at the starting field since no path has been crossed
+        boolean[][] traversedMazeBoard = new boolean[mazeBoard.length][mazeBoard[0].length];
+        traversedMazeBoard[currentField.positionY()][currentField.positionX()] = true;
 
         MazeField.BorderingFieldSide nextFieldFirstSide = determineStartingSide(mazeBoard, currentField);
         int startingFieldReachedAmount = 0;
@@ -155,7 +157,7 @@ public class HandOnWall implements MazeTraversalStrategy {
             amount++;
             if (amount >= MAX_STARTING_FIELD_REACHED_AMOUNT) {
                 throw new MazeNotTraversableException(
-                        side + " hand on wall",
+                        side + "-hand on wall",
                         maze,
                         String.format(
                                 "The starting field has been reached %d times.",
@@ -197,14 +199,18 @@ public class HandOnWall implements MazeTraversalStrategy {
         }
 
         throw new MazeNotTraversableException(
-                side + " hand on wall",
+                side + "-hand on wall",
                 maze,
                 String.format(
-                        "The current field (%s) is only surrounded by null fields or walls so that moving further"
+                        "The current field (%s) is only surrounded by null fields or walls so that moving further "
                                 + "is not possible. This error is expected if the current field is the starting "
                                 + "field (%s). If not, the strategy doesn't work properly and needs to be inspected.",
                         currentField, maze.getStartingField()
                 )
         );
+    }
+
+    public static int getMaxStartingFieldReachedAmount() {
+        return MAX_STARTING_FIELD_REACHED_AMOUNT;
     }
 }
