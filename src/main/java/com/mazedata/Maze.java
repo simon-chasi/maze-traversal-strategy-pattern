@@ -87,6 +87,8 @@ public class Maze {
     public MazeField getStartingField() { return startingField; }
     public MazeField getEndingField() { return endingField; }
     public String getDescription() { return description; }
+    public int getMazeBoardHeight() { return this.mazeBoard.length; }
+    public int getMazeBoardWidth() { return this.mazeBoard[0].length; }
 
     /**
      * {@inheritDoc}
@@ -163,6 +165,28 @@ public class Maze {
         boardAsString.setCharAt(endingField.calculateSequenceInBoard(boardAsStringWidth), ENDING_FIELD);
 
         return boardAsString.toString();
+    }
+
+    /**
+     * <p>
+     *     Calculates the number of traversed fields in the traversed maze board, meaning all
+     *     fields of the {@code boolean[][]} array whose value is {@code true}.
+     *     This includes both the starting and ending fields.
+     * </p>
+     *
+     * @return The number of {@code true} entries in the traversed maze board representing walkable
+     *         path fields
+     */
+    public int calculateTraversedPathLength(boolean[][] traversedMazeBoard) {
+        int pathLength = 0;
+
+        for (boolean[] row : traversedMazeBoard) {
+            for (boolean cell : row) {
+                if (cell) pathLength++;
+            }
+        }
+
+        return pathLength;
     }
 
     /**

@@ -39,6 +39,11 @@ oooooooE#o#
 #########oS
 oooooooooo#
 -new-maze-
+Super small maze
+ooE#o#
+#o##oS
+ooooo#
+-new-maze-
 Maze height fairly big
 oo#################################
 oooo#Soooooooooo#ooooo#ooooo#ooo#o#
