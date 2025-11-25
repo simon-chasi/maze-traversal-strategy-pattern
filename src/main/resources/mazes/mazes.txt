@@ -1,0 +1,89 @@
+-new-maze-
+Unevenly formed maze
+oo#######################
+oSoooooo#ooooo#ooo#o#ooo#
+###o###o###o#o#o#o#o###o#
+#o#o#o#ooooo#ooo#o#o#ooo#
+#o###o###o###o#####o#o####################
+#ooo#ooo#o#ooo#ooooooooo##########
+#o#o#o#######o#o#o###o#o#
+#o#ooo#ooo#ooooo#o#o#o#o#####
+###o#o###o#o#######o###o######
+#o#o#o#ooo#ooo#ooooooooo###o
+#o#o#o#o#####o#####o######oo
+#o#o#ooooo#o#ooooo#o#ooo###
+#o#o###o#o#o#####o#o###o#o##
+#ooooo#o#ooooooooo#oooooEo#
+#######################o#########
+-new-maze-
+Square formed maze
+So###########################
+oooooooo#ooooo#o#ooooooo#ooo#
+###o#####o###o#o#o#o#####o#o#
+#ooooooo#o#ooo#ooo#o#ooo#o#o#
+#o#####o###o#o#o###o###o#o#o#
+#ooooo#ooooo#ooooo#ooo#ooo#o#
+#o#######o###o#######o#o###o#
+#o#o#ooooooo#o#ooooooooo#ooo#
+#o#o#########o#o###o#o#o#####
+#ooo#ooooooooo#o#ooo#o#oooooE
+###########################o#
+-new-maze-
+Small maze
+oo#########
+oooooooE#o#
+#o#######o#
+#ooooooo#o#
+#o#####o#o#
+#o#oooooooo
+#########oS
+oooooooooo#
+-new-maze-
+Maze height fairly big
+oo#################################
+oooo#Soooooooooo#ooooo#ooooo#ooo#o#
+#o#####o#######o#o###o#o###o#o###o#
+#ooooo#ooooo#ooo#ooo#ooooo#o#ooooo#
+###o#o#####o###o#####o#o#########o#
+#ooo#ooooooo#ooooo#ooo#ooooooo#ooo#
+#######o#########o###########o###o#
+#o#o#ooo#ooooooo#o#o#ooooo#o#o#ooo#
+#o#o###o#o#########o#o#####o#o###o#
+#ooo#ooo#ooo#o#o#ooo#ooo#ooo#ooooo#
+#o#o#o#o#o###o#o#o###o#####o#####o#
+#o#ooo#ooooo#o#ooooo#ooooo#ooo#ooo#
+#########o#o#o#o###o###o###o###o###
+#o#ooooooo#ooooo#o#ooooooooo#oooooE
+#o#o#####o#o#####o###o#####o###o#o#
+#o#o#o#o#o#o#o#ooooo#o#ooooo#ooo#o#
+#o###o#o#####o#####o#o#######o###o#
+#ooooooo#o#ooooooo#ooo#ooooo#ooo#o#
+#o#o#####o###o#####o###o#o#######o#
+#o#ooooooooooooooooooooo#ooooooooo#
+#################################o#
+-new-maze-
+Maze with loop
+     ooo
+    oo#oo
+   oo###oo
+   o#####o
+   oo###oo
+   ooo#ooo
+oooooooo
+oooooooooo
+oooSoooooE
+oooooooooo
+oooooooooo
+-new-maze-
+Maze width smaller
+oo#############
+So#ooo#o#ooooo#
+#o#o###o#o#o###
+#ooo#o#ooo#o#o#
+#o###o#o#####o#
+#ooooooo#ooooo#
+###o###o###o###
+#ooooo#ooooo#o#
+###o#######o#o#
+#ooooo#oooooooE
+#############oo

@@ -7,7 +7,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.util.Arrays;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -36,7 +35,7 @@ public abstract class AbstractMazeTraversalStrategyTest<T extends MazeTraversalS
                 String.join(
                         System.lineSeparator(),
                         String.format(
-                                "Using the %s maze traversal strategy the traversed board of the maze:",
+                                "The traversed maze board using the %s maze traversal strategy:",
                                 traversalStrategy.getClass().getSimpleName()
                         ),
                         maze.toString(),
@@ -55,7 +54,7 @@ public abstract class AbstractMazeTraversalStrategyTest<T extends MazeTraversalS
                 MazeNotTraversableException.class,
                 () -> traversalStrategy.traverseMaze(maze),
                 String.format(
-                        "A %s should be thrown when trying to traverse a maze which is not traversable using %s.",
+                        "A %s should be thrown when traversing a maze which is not traversable using %s.",
                         MazeNotTraversableException.class.getSimpleName(), traversalStrategy.getClass().getSimpleName()
                 )
         );

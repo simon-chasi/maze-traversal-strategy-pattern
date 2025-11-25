@@ -80,13 +80,6 @@ public record MazeField(
         TOP, RIGHT, BOTTOM, LEFT;
 
         /**
-         * Returns the four {@link BorderingFieldSide} enum constants starting from top in a clockwise direction.
-         */
-        public static BorderingFieldSide[] order() {
-            return order(BorderingFieldsDirection.CLOCKWISE);
-        }
-
-        /**
          * Returns the four {@link BorderingFieldSide} enum constants starting from top in the given direction.
          */
         public static BorderingFieldSide[] order(BorderingFieldsDirection direction) {
@@ -99,31 +92,10 @@ public record MazeField(
         }
 
         /**
-         * Returns the ordinals of the enum constants ordered in a clockwise direction.
-         */
-        public static int[] orderedOrdinals() {
-            return orderedOrdinals(BorderingFieldsDirection.CLOCKWISE);
-        }
-
-        /**
          * Returns the ordinals of the enum constants ordered in the given direction.
          */
         public static int[] orderedOrdinals(BorderingFieldsDirection direction) {
             return Arrays.stream(order(direction)).mapToInt(BorderingFieldSide::ordinal).toArray();
-        }
-
-        /**
-         * Returns the next side in a clockwise direction.
-         */
-        public BorderingFieldSide next() {
-            return next(1);
-        }
-
-        /**
-         * Returns the side which is {@code distance} steps away from this one in a clockwise direction.
-         */
-        public BorderingFieldSide next(int distance) {
-            return next(BorderingFieldsDirection.CLOCKWISE, distance);
         }
 
         /**
@@ -139,27 +111,6 @@ public record MazeField(
         public BorderingFieldSide next(BorderingFieldsDirection direction, int distance) {
             BorderingFieldSide[] values = BorderingFieldSide.values();
             return values[Math.floorMod(this.ordinal() - distance * direction.getDirection(), values.length)];
-        }
-
-         /**
-         * Returns the previous side (next side in a counterclockwise direction).
-         */
-        public BorderingFieldSide previous() {
-            return next(BorderingFieldsDirection.COUNTER_CLOCKWISE);
-        }
-
-        /**
-         * Returns the side which is {@code distance} steps away from this one in a counterclockwise direction.
-         */
-        public BorderingFieldSide previous(int distance) {
-            return next(BorderingFieldsDirection.COUNTER_CLOCKWISE, distance);
-        }
-
-        /**
-         * Returns the side which lies opposite in comparison to this one.
-         */
-        public BorderingFieldSide inverse() {
-            return next(2);
         }
 
         /**
@@ -333,6 +284,7 @@ public record MazeField(
      * @deprecated To determine the bordering fields indexes use
      *             {@link BorderingFieldSide#indexes(BorderingFieldsDirection)} instead.
      */
+    @Deprecated
     private static int[] determineBorderingFieldsIndexes(
             BorderingFieldsDirection direction, BorderingFieldSide firstSide
     ) {
