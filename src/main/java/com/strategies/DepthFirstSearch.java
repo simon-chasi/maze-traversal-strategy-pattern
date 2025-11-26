@@ -63,21 +63,21 @@ public class DepthFirstSearch implements MazeTraversableCheckStrategy, MazeTrave
         MazeField endingField = maze.getEndingField();
 
         List<MazeField> passedFields = new ArrayList<>(Collections.singleton(currentField));
-        List<MazeField> traversalFields = new ArrayList<>(Collections.singleton(currentField));
+        List<MazeField> finalPathFields = new ArrayList<>(Collections.singleton(currentField));
 
         while (!currentField.equals(endingField)) {
             MazeField nextField = determineNextField(mazeBoard, currentField, passedFields);
             if (nextField != null) {
                 passedFields.add(nextField);
-                traversalFields.add(nextField);
+                finalPathFields.add(nextField);
                 currentField = nextField;
                 continue;
             }
             // If a dead end has been reached, move to the previous field and repeat the process
-            currentField = determinePreviousField(traversalFields, maze);
+            currentField = determinePreviousField(finalPathFields, maze);
         }
 
-        return traversalFieldsToTraversedBoard(traversalFields, mazeBoard.length, mazeBoard[0].length);
+        return pathFieldsToTraversedBoard(finalPathFields, mazeBoard.length, mazeBoard[0].length);
     }
 
     /**
@@ -108,15 +108,15 @@ public class DepthFirstSearch implements MazeTraversableCheckStrategy, MazeTrave
      * Tries to go back by one field and returns it in order to continue the maze traversal process from
      * that field on. This method is to be used after no further advancement in the maze board is possible.
      *
-     * @param traversalFields A list containing the fields crossed to reach the exit so far
+     * @param pathFields A list containing the fields crossed to reach the exit so far
      * @param maze The maze to be traversed
      * @return as described above
      * @throws MazeNotTraversableException If {@code traversalFields.size() == 1} meaning
      *                                     that the list only contains the starting field.
      */
-    private static MazeField determinePreviousField(List<MazeField> traversalFields, Maze maze) {
-        traversalFields.removeLast();
-        if (traversalFields.isEmpty()) {
+    private static MazeField determinePreviousField(List<MazeField> pathFields, Maze maze) {
+        pathFields.removeLast();
+        if (pathFields.isEmpty()) {
             throw new MazeNotTraversableException(
                     "depth first search",
                     maze,
@@ -127,21 +127,21 @@ public class DepthFirstSearch implements MazeTraversableCheckStrategy, MazeTrave
                     )
             );
         }
-        return traversalFields.getLast();
+        return pathFields.getLast();
     }
 
     /**
      * Converts a list of traversed maze fields into a traversed maze board.
      *
-     * @param traversalFields A list containing maze fields stored during the maze traversal process
+     * @param pathFields A list containing maze fields stored during the maze traversal process
      * @param boardHeight The maze board height
      * @param boardWidth The maze board width
      * @return The traversed maze board
      */
-    private boolean[][] traversalFieldsToTraversedBoard(List<MazeField> traversalFields, int boardHeight, int boardWidth) {
+    private boolean[][] pathFieldsToTraversedBoard(List<MazeField> pathFields, int boardHeight, int boardWidth) {
         boolean[][] traversedMazeBoard = new boolean[boardHeight][boardWidth];
 
-        for (MazeField field : traversalFields) {
+        for (MazeField field : pathFields) {
             traversedMazeBoard[field.positionY()][field.positionX()] = true;
         }
         return traversedMazeBoard;

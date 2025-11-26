@@ -34,7 +34,7 @@ public class InteractiveMazeApp {
 
         // Initialize strategies
         this.strategies = new MazeTraversalStrategy[] {
-                new DepthFirstSearch(), // replace with breadth when implemented
+                new BreadthFirstSearch(),
                 new DepthFirstSearch(),
                 new HandOnWall(HandOnWall.HandOnWallSide.RIGHT),
                 new HandOnWall(HandOnWall.HandOnWallSide.LEFT)
