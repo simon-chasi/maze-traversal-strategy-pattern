@@ -3,12 +3,11 @@ package com.strategies;
 import com.mazedata.Maze;
 import com.mazedata.MazeField;
 
-import java.util.List;
 import java.util.stream.Stream;
 
 /**
  * The class {@code TestMazeObjects} contains {@link Maze} objects which are supposed to be
- * used for testing a {@link MazeTraversalStrategy} or {@link MazeTraversableCheckStrategy}.
+ * used for testing a {@link MazeTraversalStrategy} or {@link GuaranteedMazeTraverser}.
  */
 public class TestMazeObjects {
     /**

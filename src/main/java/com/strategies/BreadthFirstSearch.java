@@ -6,32 +6,15 @@ import com.mazedata.MazeField;
 import java.util.*;
 
 /**
- * The breadth first search (BFS) maze traversal strategy works by exploring all neighbours
- * at the current depth before moving to nodes at the next depth level. This guarantees
- * finding the shortest path if one exists.
+ * <p>
+ *     The breadth first search (BFS) maze traversal strategy works by exploring all neighbours
+ *     at the current depth before moving to nodes at the next depth level. This guarantees
+ *     finding the shortest path if one exists.
+ * </p>
+ *
+ * This maze traversal strategy is guaranteed to find the shortest traversal path if one exists.
  */
-public class BreadthFirstSearch implements MazeTraversableCheckStrategy, MazeTraversalStrategy {
-
-    /**
-     * <p>
-     *     The method uses {@link #traverseMaze(Maze)} in attempt to traverse a maze
-     *     and returns {@code true} on success, {@code false} otherwise.
-     * </p>
-     * To find out the reason of untraversability call {@link #traverseMaze(Maze)} directly.
-     *
-     * @param maze {@inheritDoc}
-     * @return {@inheritDoc}
-     */
-    @Override
-    public boolean mazeIsTraversable(Maze maze) {
-        try {
-            traverseMaze(maze);
-            return true;
-        } catch (MazeNotTraversableException e) {
-            return false;
-        }
-    }
-
+public class BreadthFirstSearch extends GuaranteedMazeTraverser {
     /**
      * <p>
      *     This method implements the BFS maze traversal strategy by first exploring all neighbouring
@@ -97,8 +80,8 @@ public class BreadthFirstSearch implements MazeTraversableCheckStrategy, MazeTra
             Map<MazeField, MazeField> predecessorMap, Maze maze
     ) {
         boolean[][] mazeBoard = maze.getMazeBoard();
-        MazeField[] neighbours = currentField.determineBorderingFields(maze.getMazeBoardHeight(),
-                maze.getMazeBoardWidth()
+        MazeField[] neighbours = currentField.determineBorderingFields(
+                maze.getMazeBoardHeight(), maze.getMazeBoardWidth()
         );
 
         for (MazeField neighbour : neighbours) {
@@ -131,22 +114,5 @@ public class BreadthFirstSearch implements MazeTraversableCheckStrategy, MazeTra
 
         Collections.reverse(path);
         return path;
-    }
-
-    /**
-     * Converts a list of traversed maze fields into a traversed maze board.
-     *
-     * @param pathFields A list containing maze fields in the shortest path
-     * @param boardHeight The maze board height
-     * @param boardWidth The maze board width
-     * @return The traversed maze board
-     */
-    private boolean[][] pathFieldsToTraversedBoard(List<MazeField> pathFields, int boardHeight, int boardWidth) {
-        boolean[][] traversedMazeBoard = new boolean[boardHeight][boardWidth];
-
-        for (MazeField field : pathFields) {
-            traversedMazeBoard[field.positionY()][field.positionX()] = true;
-        }
-        return traversedMazeBoard;
     }
 }

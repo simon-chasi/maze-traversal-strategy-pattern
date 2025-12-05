@@ -3,36 +3,20 @@ package com.strategies;
 import com.mazedata.Maze;
 import com.mazedata.MazeField;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
- * The depth first search (DFS) maze traversal strategy works by exploring one path for as long
- * as possible until either the ending field or a dead end has been reached. In case of a dead
- * end the maze follower goes back by one step and continues using an alternative path.
+ * <p>
+ *     The depth first search (DFS) maze traversal strategy works by exploring one path for as long
+ *     as possible until either the ending field or a dead end has been reached. In case of a dead
+ *     end the maze follower goes back by one step and continues using an alternative path.
+ * </p>
+ *
+ * This maze traversal strategy is guaranteed to find a traversal path if one exists.
+ *
+ * @see GuaranteedMazeTraverser
  */
-public class DepthFirstSearch implements MazeTraversableCheckStrategy, MazeTraversalStrategy {
-    /**
-     * <p>
-     *     The method uses {@link #traverseMaze(Maze)} in attempt to traverse a maze
-     *     and returns {@code true} on success, {@code false} otherwise.
-     * </p>
-     * To find out the reason of untraversability call {@link #traverseMaze(Maze)} directly.
-     *
-     * @param maze {@inheritDoc}
-     * @return {@inheritDoc}
-     */
-    @Override
-    public boolean mazeIsTraversable(Maze maze) {
-        try {
-            traverseMaze(maze);
-            return true;
-        } catch (MazeNotTraversableException e) {
-            return false;
-        }
-    }
-
+public class DepthFirstSearch extends GuaranteedMazeTraverser {
     /**
      * <p>
      *     This method implements the DFS maze traversal strategy by always trying to move up and if that
@@ -62,7 +46,7 @@ public class DepthFirstSearch implements MazeTraversableCheckStrategy, MazeTrave
         MazeField currentField = maze.getStartingField();
         MazeField endingField = maze.getEndingField();
 
-        List<MazeField> passedFields = new ArrayList<>(Collections.singleton(currentField));
+        Set<MazeField> passedFields = new HashSet<>(Collections.singleton(currentField));
         List<MazeField> finalPathFields = new ArrayList<>(Collections.singleton(currentField));
 
         while (!currentField.equals(endingField)) {
@@ -89,8 +73,8 @@ public class DepthFirstSearch implements MazeTraversableCheckStrategy, MazeTrave
      * @param passedFields A list containing the already passed fields
      * @return The next field to be traversed or {@code null} if a dead end has been reached
      */
-    private static MazeField determineNextField(
-            boolean[][] mazeBoard, MazeField currentField, List<MazeField> passedFields
+    private MazeField determineNextField(
+            boolean[][] mazeBoard, MazeField currentField, Set<MazeField> passedFields
     ) {
         // Starting side and direction is arbitrary
         MazeField[] borderingFields = currentField.determineBorderingFields(mazeBoard.length, mazeBoard[0].length);
@@ -114,7 +98,7 @@ public class DepthFirstSearch implements MazeTraversableCheckStrategy, MazeTrave
      * @throws MazeNotTraversableException If {@code traversalFields.size() == 1} meaning
      *                                     that the list only contains the starting field.
      */
-    private static MazeField determinePreviousField(List<MazeField> pathFields, Maze maze) {
+    private MazeField determinePreviousField(List<MazeField> pathFields, Maze maze) {
         pathFields.removeLast();
         if (pathFields.isEmpty()) {
             throw new MazeNotTraversableException(
@@ -128,22 +112,5 @@ public class DepthFirstSearch implements MazeTraversableCheckStrategy, MazeTrave
             );
         }
         return pathFields.getLast();
-    }
-
-    /**
-     * Converts a list of traversed maze fields into a traversed maze board.
-     *
-     * @param pathFields A list containing maze fields stored during the maze traversal process
-     * @param boardHeight The maze board height
-     * @param boardWidth The maze board width
-     * @return The traversed maze board
-     */
-    private boolean[][] pathFieldsToTraversedBoard(List<MazeField> pathFields, int boardHeight, int boardWidth) {
-        boolean[][] traversedMazeBoard = new boolean[boardHeight][boardWidth];
-
-        for (MazeField field : pathFields) {
-            traversedMazeBoard[field.positionY()][field.positionX()] = true;
-        }
-        return traversedMazeBoard;
     }
 }

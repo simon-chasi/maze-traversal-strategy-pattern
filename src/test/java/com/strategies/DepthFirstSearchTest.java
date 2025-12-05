@@ -7,9 +7,9 @@ import java.util.stream.Stream;
 
 public class DepthFirstSearchTest {
     @Nested
-    public class TraversableCheck extends AbstractMazeTraversableCheckStrategyTest<DepthFirstSearch> {
+    public class TraversableCheck extends GuaranteedMazeTraverserTest<DepthFirstSearch> {
         @Override
-        protected DepthFirstSearch createTraversableCheckStrategy() {
+        protected DepthFirstSearch createGuaranteedMazeTraverser() {
             return new DepthFirstSearch();
         }
     }

@@ -5,47 +5,57 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.util.stream.Stream;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public abstract class AbstractMazeTraversableCheckStrategyTest<T extends MazeTraversableCheckStrategy> {
-    protected T traversableCheckStrategy;
+public abstract class GuaranteedMazeTraverserTest<T extends GuaranteedMazeTraverser> {
+    protected T guaranteedMazeTraverser;
 
-    protected abstract T createTraversableCheckStrategy();
+    protected abstract T createGuaranteedMazeTraverser();
 
     @BeforeEach
     public void setUp() {
-        traversableCheckStrategy = createTraversableCheckStrategy();
+        guaranteedMazeTraverser = createGuaranteedMazeTraverser();
     }
 
     @ParameterizedTest
-    @MethodSource("com.strategies.TestMazeObjects#getTraversableMazes")
+    @MethodSource("getTraversableMazes")
     void testMazeIsTraversable_WithTraversableMaze(Maze maze) {
         assertTrue(
-                traversableCheckStrategy.mazeIsTraversable(maze),
+                guaranteedMazeTraverser.mazeIsTraversable(maze),
                 String.join(
                         System.lineSeparator(),
                         String.format(
                                 "The following maze should be traversable using the %s traversal strategy:",
-                                traversableCheckStrategy.getClass().getSimpleName()
+                                guaranteedMazeTraverser.getClass().getSimpleName()
                         ),
                         maze.toString()
                 )
         );
     }
 
+    protected static Stream<Maze> getTraversableMazes() {
+        return TestMazeObjects.getTraversableMazes();
+    }
+
     @ParameterizedTest
-    @MethodSource("com.strategies.TestMazeObjects#getUntraversableMazes")
+    @MethodSource("getUntraversableMazes")
     void testMazeIsTraversable_WithUntraversableMaze(Maze maze) {
         assertFalse(
-                traversableCheckStrategy.mazeIsTraversable(maze),
+                guaranteedMazeTraverser.mazeIsTraversable(maze),
                 String.join(
                         System.lineSeparator(),
                         String.format(
                                 "The following maze should not be traversable using the %s traversal strategy:",
-                                traversableCheckStrategy.getClass().getSimpleName()
+                                guaranteedMazeTraverser.getClass().getSimpleName()
                         ),
                         maze.toString()
                 )
         );
+    }
+
+    protected static Stream<Maze> getUntraversableMazes() {
+        return TestMazeObjects.getUntraversableMazes();
     }
 }
