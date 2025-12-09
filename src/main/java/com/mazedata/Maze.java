@@ -69,9 +69,9 @@ public class Maze {
                 || endingField.positionX() >= mazeBoard[0].length || endingField.positionY() >= mazeBoard.length) {
             throw new IllegalArgumentException(String.format(
                     "To successfully create a maze object the passed starting and ending fields "
-                            + "must lie within the maze board.%sStarting field: %s, ending field: %s\n"
+                            + "must lie within the maze board.%sStarting field: %s, ending field: %s"
                             + "Maze board width: %d, maze board height: %d",
-                    System.lineSeparator().repeat(2), startingField, endingField,
+                    System.lineSeparator().repeat(2), startingField, endingField + System.lineSeparator(),
                     mazeBoard[0].length, mazeBoard.length
             ));
         }

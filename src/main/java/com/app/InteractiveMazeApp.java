@@ -18,7 +18,8 @@ public class InteractiveMazeApp {
     private static final String BORDER =
             "═══════════════════════════════════════════════════════════";
     private static final String BORDER_WITH_LINEBREAK =
-            "\n═══════════════════════════════════════════════════════════";
+            System.lineSeparator() +
+            "═══════════════════════════════════════════════════════════";
 
     private final MazeRepository repository;
     private final Scanner scanner;
@@ -123,8 +124,8 @@ public class InteractiveMazeApp {
         }
 
         Maze selectedMaze = mazes.get(userSelectedInput - 1);
-        System.out.println("\n✓ Selected: " + selectedMaze.getDescription());
-        System.out.println("\nMaze visualization:");
+        System.out.println(System.lineSeparator() + "✓ Selected: " + selectedMaze.getDescription());
+        System.out.println(System.lineSeparator() + "Maze visualization:");
         System.out.println(selectedMaze.mazeBoardToString());
 
         return selectedMaze;
@@ -155,7 +156,7 @@ public class InteractiveMazeApp {
             return null;
         }
 
-        System.out.println("\n✓ Selected: " + strategyNames[userSelectedInput - 1]);
+        System.out.println(System.lineSeparator() + "✓ Selected: " + strategyNames[userSelectedInput - 1]);
         return strategies[userSelectedInput - 1];
     }
 
@@ -179,10 +180,10 @@ public class InteractiveMazeApp {
             displaySuccessfulTraversal(durationMs, maze, traversedBoard);
 
         } catch (MazeNotTraversableException e) {
-            System.out.println("\n✗ MAZE COULD NOT BE SOLVED");
+            System.out.println(System.lineSeparator() + "✗ MAZE COULD NOT BE SOLVED");
             printBorder();
             System.out.println("Reason: " + e.getReason());
-            System.out.println("\nThis maze could not be traversed using the selected strategy.");
+            System.out.println(System.lineSeparator() + "This maze could not be traversed using the selected strategy.");
         }
     }
 
@@ -193,9 +194,9 @@ public class InteractiveMazeApp {
     }
 
     private void displaySuccessfulTraversal(double durationMs, Maze maze, boolean[][] traversedMazeBoard) {
-        System.out.println("\n✓ MAZE SOLVED SUCCESSFULLY!");
-        System.out.printf("⏱  Time taken: %.3f ms%n", durationMs);
-        System.out.println("\nSolution path (marked with 'x'):");
+        System.out.println(System.lineSeparator() + "✓ MAZE SOLVED SUCCESSFULLY!");
+        System.out.printf("⏱ Time taken: %.3f ms%n", durationMs);
+        System.out.println(System.lineSeparator() + "Solution path (marked with 'x'):");
         System.out.println(BORDER);
         System.out.println(maze.traversedBoardToString(traversedMazeBoard));
         System.out.printf("📊 Path length: %d fields%n", maze.calculateTraversedPathLength(traversedMazeBoard));
