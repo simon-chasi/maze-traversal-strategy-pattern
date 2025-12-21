@@ -5,11 +5,11 @@ import java.util.logging.Logger;
 
 /**
  * <p>
- *     The class {@code Maze} represents a labyrinth which consists out of a board with a starting and ending field.
- *     It provides a static class with a static method for creating a maze object and contains string returning methods
- *     to provide various presentations of a maze in the console.
+ *     The class {@code Maze} represents a labyrinth which consists of a board with a starting and ending field.
+ *     It provides a static class with a static method for creating a maze object and methods which provide various
+ *     string representations of a maze for console output.
  * </p>
- * Based on the maze's description and look the user may choose a maze traversing strategies to traverse it.
+ * The user may choose a maze traversing strategies to traverse a maze based on its structure description.
  */
 public class Maze {
     /**
@@ -30,7 +30,7 @@ public class Maze {
 
     /**
      * The maze board is stored as a 2d boolean array. {@code true} values represent the path
-     * while {@code false} values indicate that a wall is to be found at the specific position.
+     * while {@code false} values represent a wall at the specific position.
      */
     private final boolean[][] mazeBoard;
 
@@ -38,7 +38,7 @@ public class Maze {
     private final MazeField endingField;
 
     /**
-     * Constructs a {@link Maze} objects taking into account the underlying conditions.
+     * Constructs a {@link Maze} object taking into account the underlying conditions and restrictions.
      *
      * @param mazeBoard A non-null and non-empty 2d boolean array with initialized values for the path and walls
      * @param startingField A non-null {@link MazeField} object which represents the starting position of the maze
@@ -108,9 +108,8 @@ public class Maze {
     }
 
     /**
-     * Returns a string representation of board which can traverse this maze. The passed board
-     * doesn't necessarily need to successfully traverse the maze. It can also show that the
-     * maze is untraversable if a path from the starting to the ending field doesn't exist.
+     * Returns a string representation of a path through a maze. The traversedBoard can thus
+     * represent paths that successfully reach the ending field as well as those that do not.
      *
      * @param traversedBoard The traversed maze board with {@code true} values representing the traversed path
      * @return The maze board along with the traversed board as string or {@code null} if
@@ -132,11 +131,8 @@ public class Maze {
     /**
      * <p>
      *     Returns a string representation of the maze board if {@code traversedBoard == null}, otherwise
-     *     the traversed board with {@code true} values standing for the traversed path is returned.
+     *     it returns the traversed board with {@code true} values standing for the traversed path.
      * </p>
-     * Being private this method doesn't perform checks to avoid exceptions (see below), so in order for
-     * exceptions not to be thrown, tha passed board must either be {@code null} or have the same height
-     * and width as the maze board while none of the {@code boolean[]} rows is {@code null}.
      *
      * @param traversedBoard The traversed board or {@code null}
      * @return as described above
@@ -159,7 +155,7 @@ public class Maze {
         }
 
         // Replace starting and ending field characters only after initializing the board with path and
-        // wall characters. Performing a further check in the nested for-loop is costly for large mazes.
+        // wall characters as performing a further check in the nested for-loop is costly for large mazes.
         int boardAsStringWidth = mazeBoard[0].length + System.lineSeparator().length();
         boardAsString.setCharAt(startingField.calculateSequenceInBoard(boardAsStringWidth), STARTING_FIELD);
         boardAsString.setCharAt(endingField.calculateSequenceInBoard(boardAsStringWidth), ENDING_FIELD);
@@ -200,7 +196,7 @@ public class Maze {
         private static final Logger LOGGER = Logger.getLogger(MazeFactory.class.getName());
 
         /**
-         * Performs checks to ensure that the passed field lines array is valid and eventually
+         * Performs checks to ensure that the passed field lines array is valid and subsequently
          * parses the lines along with the description to a {@link Maze} object.
          *
          * @param fieldLines A string array containing the horizontal maze field lines
@@ -247,11 +243,11 @@ public class Maze {
         }
 
         /**
-         * Returns {@code true} if there is only one starting and ending field char present
-         * in the given field lines array, {@code false} otherwise.
+         * Method to ensure that only one starting and ending field character is present.
          *
          * @param fieldLines A non-null and non-empty string array containing the horizontal maze field lines
-         * @return as described above
+         * @return  Returns {@code true} if there is only one starting and ending field char present
+         *  in the given field lines array, {@code false} otherwise.
          */
         private static boolean onlyOneStartingAndEndingFieldCharPresent(String[] fieldLines) {
             String fieldLinesInOneLine = String.join("", fieldLines);

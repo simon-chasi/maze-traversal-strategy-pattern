@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * The class {@code MazeField} represents a field inside a {@link Maze} board
- * and is characterized by a horizontal and vertical position coordinates.
+ * and is characterized by horizontal and vertical positional coordinates.
  *
  * @param positionX Horizontal position
  * @param positionY Vertical position

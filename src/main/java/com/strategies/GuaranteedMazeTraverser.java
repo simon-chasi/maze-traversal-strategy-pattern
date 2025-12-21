@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * <p>
- *     A class which extends the abstract class {@code GuaranteedMazeTraverser}
+ *     A class which extends the abstract class {@code GuaranteedMazeTraverser} and
  *     is guaranteed to find a traversal path for a maze if one exists.
  * </p>
  *
