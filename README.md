@@ -15,3 +15,8 @@ mvn clean compile exec:java
 ```bash
 mvn clean package
 java -jar target/maze-traversal-strategy-1.0-SNAPSHOT-jar-with-dependencies.jar
+```
+
+## Authors
+- Simon Chasi (Matr.-Nr.: 2695170)
+- Ognjen Jovanovic (Matr.-Nr.: 5635633)
